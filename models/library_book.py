@@ -7,11 +7,35 @@ class Book(models.Model):
     _description = 'Book'
     _order='name, date_published desc'
 
+    # String fields: name=fields.Char('Title')
     name = fields.Char('Title', required=True)
     isbn = fields.Char('ISBN')
-    active = fields.Boolean('Active?', default=True)
+    book_type=fields.Selection(
+        [('paper','Paperback'),
+         ('hard','Hardcover'),
+         ('electronic','Electronic'),
+         ('other','Other')],'Type')
+    notes=fields.Text('Internal Notes')
+    descr=fields.Html('Description')
+
+    # Numeric fields:
+    copies=fields.Integer(default=1)
+    avg_rating=fields.Float('Average Rating',(3,2))
+    price=fields.Monetray('Price','currency_id')
+    currency_id=fields.Many2one('res.currrency')
+
+    # Date and time fields:
     date_published = fields.Date()
+    last_borrow_date=fields.Datetime('Last Borrowed On',default=lambda self: fields.Datetime.now())
+
+    #Other fields:
+
+    active = fields.Boolean('Active?')
     image = fields.Binary('Cover')
+
+    # Relational Fields:
+
+
     publisher_id = fields.Many2one('res.partner', string='Publisher')
     author_ids = fields.Many2many('res.partner', string='Authors')
 
